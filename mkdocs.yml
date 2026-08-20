@@ -1,6 +1,6 @@
-site_name: momo-sdk
+site_name: mtn-momo-sdk
 site_description: Unofficial Python SDK for the MTN MoMo Open API
-repo_url: https://github.com/kangwa/momo-sdk
+repo_url: https://github.com/kangwa/mtn-momo-sdk
 
 theme:
   name: material

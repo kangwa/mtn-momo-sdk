@@ -4,7 +4,7 @@ from typing import Any
 
 
 class MomoError(Exception):
-    """Base class for every error raised by momo-sdk."""
+    """Base class for every error raised by mtn-momo."""
 
 
 class MomoConfigError(MomoError):

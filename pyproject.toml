@@ -51,3 +51,4 @@ plugins = ["pydantic.mypy"]
 [tool.pytest.ini_options]
 addopts = "-ra"
 asyncio_mode = "auto"
+markers = ["sandbox: hits the real MTN sandbox, requires MOMO_* env vars"]

@@ -31,3 +31,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
   (subscription-key-only auth, no bearer token required).
 - mtn-momo-provision CLI entry point for provisioning sandbox credentials from the
   command line.
+- get_balance() and is_account_holder_active() on all product clients (sync + async),
+  closing the gap from the original design that request_to_pay/transfer-only left open.
+- Sandbox smoke test infrastructure (tests/smoke/, pytest.mark.sandbox, manual
+  sandbox-smoke.yml workflow) for verifying modeled request/response shapes against
+  MTN's real sandbox once live credentials are available.

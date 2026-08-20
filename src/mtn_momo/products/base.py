@@ -9,14 +9,16 @@ from typing import Any, ClassVar
 
 import httpx
 
+from mtn_momo._internal.utils import new_reference_id
 from mtn_momo.auth.token_cache import TokenCache
 from mtn_momo.config import ProductConfig
+from mtn_momo.constants import PartyIdType
 from mtn_momo.http.async_transport import AsyncHttpTransport
 from mtn_momo.http.base import PreparedRequest, raise_for_response
 from mtn_momo.http.sync_transport import SyncHttpTransport
 from mtn_momo.models.common import Party
 from mtn_momo.models.requests import RequestToPayRequest, TransferRequest
-from mtn_momo.models.responses import TokenResponse, TransactionStatus
+from mtn_momo.models.responses import BalanceInfo, TokenResponse, TransactionStatus
 from mtn_momo.polling import (
     DEFAULT_POLL_CONFIG,
     PollConfig,
@@ -98,6 +100,29 @@ class _BaseProductCore:
             headers=self._build_headers(reference_id=reference_id, access_token=access_token),
         )
 
+    def _build_balance_request(self, currency: str | None, access_token: str) -> PreparedRequest:
+        path = "account/balance" if currency is None else f"account/balance/{currency}"
+        return PreparedRequest(
+            method="GET",
+            url=f"{self._config.base_url}/{self.product_path}/v1_0/{path}",
+            headers=self._build_headers(reference_id=new_reference_id(), access_token=access_token),
+        )
+
+    def _build_account_holder_active_request(
+        self,
+        account_holder_id_type: PartyIdType,
+        account_holder_id: str,
+        access_token: str,
+    ) -> PreparedRequest:
+        return PreparedRequest(
+            method="GET",
+            url=(
+                f"{self._config.base_url}/{self.product_path}/v1_0/accountholder/"
+                f"{account_holder_id_type.value}/{account_holder_id}/active"
+            ),
+            headers=self._build_headers(reference_id=new_reference_id(), access_token=access_token),
+        )
+
     @staticmethod
     def _parse_token_response(response: httpx.Response) -> TokenResponse:
         return TokenResponse.model_validate(response.json())
@@ -105,6 +130,14 @@ class _BaseProductCore:
     @staticmethod
     def _parse_status_response(response: httpx.Response) -> TransactionStatus:
         return TransactionStatus.model_validate(response.json())
+
+    @staticmethod
+    def _parse_balance_response(response: httpx.Response) -> BalanceInfo:
+        return BalanceInfo.model_validate(response.json())
+
+    @staticmethod
+    def _parse_account_holder_active_response(response: httpx.Response) -> bool:
+        return bool(response.json().get("result", False))
 
 
 class _SyncExecMixin(_BaseProductCore):
@@ -159,6 +192,24 @@ class _SyncExecMixin(_BaseProductCore):
         return poll_until_complete_sync(
             lambda: self.get_transaction_status(reference_id), poll_config
         )
+
+    def get_balance(self, currency: str | None = None) -> BalanceInfo:
+        """Get the account's available balance, optionally in a specific currency."""
+        access_token = self._ensure_token()
+        request = self._build_balance_request(currency, access_token)
+        response = self._execute(request)
+        return self._parse_balance_response(response)
+
+    def is_account_holder_active(
+        self, account_holder_id_type: PartyIdType, account_holder_id: str
+    ) -> bool:
+        """Check whether an account holder (e.g. a payer's MSISDN) is registered and active."""
+        access_token = self._ensure_token()
+        request = self._build_account_holder_active_request(
+            account_holder_id_type, account_holder_id, access_token
+        )
+        response = self._execute(request)
+        return self._parse_account_holder_active_response(response)
 
     def close(self) -> None:
         """Close the underlying HTTP transport."""
@@ -223,6 +274,24 @@ class _AsyncExecMixin(_BaseProductCore):
         return await poll_until_complete_async(
             lambda: self.get_transaction_status(reference_id), poll_config
         )
+
+    async def get_balance(self, currency: str | None = None) -> BalanceInfo:
+        """Get the account's available balance, optionally in a specific currency."""
+        access_token = await self._ensure_token()
+        request = self._build_balance_request(currency, access_token)
+        response = await self._execute(request)
+        return self._parse_balance_response(response)
+
+    async def is_account_holder_active(
+        self, account_holder_id_type: PartyIdType, account_holder_id: str
+    ) -> bool:
+        """Check whether an account holder (e.g. a payer's MSISDN) is registered and active."""
+        access_token = await self._ensure_token()
+        request = self._build_account_holder_active_request(
+            account_holder_id_type, account_holder_id, access_token
+        )
+        response = await self._execute(request)
+        return self._parse_account_holder_active_response(response)
 
     async def aclose(self) -> None:
         """Close the underlying HTTP transport."""

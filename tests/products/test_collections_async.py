@@ -219,3 +219,53 @@ class TestAsyncCollectionsClient:
             await client.wait_for_transaction(
                 reference_id, poll_config=PollConfig(interval=0.01, timeout=0.02)
             )
+
+    @respx.mock
+    async def test_get_balance_without_currency(self, config: ProductConfig) -> None:
+        _mock_token()
+        route = respx.get(f"{BASE_URL}/collection/v1_0/account/balance").mock(
+            return_value=httpx.Response(200, json={"availableBalance": "1000", "currency": "EUR"})
+        )
+
+        client = AsyncCollectionsClient(config)
+        balance = await client.get_balance()
+
+        assert route.called
+        assert balance.available_balance == "1000"
+        assert balance.currency == "EUR"
+
+    @respx.mock
+    async def test_get_balance_with_currency(self, config: ProductConfig) -> None:
+        _mock_token()
+        route = respx.get(f"{BASE_URL}/collection/v1_0/account/balance/EUR").mock(
+            return_value=httpx.Response(200, json={"availableBalance": "1000", "currency": "EUR"})
+        )
+
+        client = AsyncCollectionsClient(config)
+        await client.get_balance("EUR")
+
+        assert route.called
+
+    @respx.mock
+    async def test_is_account_holder_active_true(self, config: ProductConfig) -> None:
+        _mock_token()
+        respx.get(f"{BASE_URL}/collection/v1_0/accountholder/MSISDN/260960000000/active").mock(
+            return_value=httpx.Response(200, json={"result": True})
+        )
+
+        client = AsyncCollectionsClient(config)
+        is_active = await client.is_account_holder_active(PartyIdType.MSISDN, "260960000000")
+
+        assert is_active is True
+
+    @respx.mock
+    async def test_is_account_holder_active_false(self, config: ProductConfig) -> None:
+        _mock_token()
+        respx.get(f"{BASE_URL}/collection/v1_0/accountholder/MSISDN/260960000000/active").mock(
+            return_value=httpx.Response(200, json={"result": False})
+        )
+
+        client = AsyncCollectionsClient(config)
+        is_active = await client.is_account_holder_active(PartyIdType.MSISDN, "260960000000")
+
+        assert is_active is False

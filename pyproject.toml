@@ -1,0 +1,54 @@
+[project]
+name = "momo-sdk"
+version = "0.1.0"
+description = "Unofficial Python SDK for the MTN Mobile Money (MoMo) Open API"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic>=2.13.4",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[project.optional-dependencies]
+dotenv = ["python-dotenv>=1.0"]
+
+[project.scripts]
+momo-sdk-provision = "momo_sdk.provisioning:main"
+
+[dependency-groups]
+dev = [
+    "coverage[toml]>=7.15.4",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "respx>=0.23.1",
+    "ruff>=0.16.3",
+]
+
+docs = [
+  "mkdocs>=1.6,<2.0",
+  "mkdocs-material>=9.5",
+  "mkdocstrings[python]>=0.25",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+asyncio_mode = "auto"
+
+

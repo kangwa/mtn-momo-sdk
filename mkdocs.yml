@@ -1,0 +1,18 @@
+site_name: momo-sdk
+site_description: Unofficial Python SDK for the MTN MoMo Open API
+repo_url: https://github.com/kangwa/momo-sdk
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - API Reference: reference.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false

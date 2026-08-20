@@ -23,3 +23,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 - Sync/async Disbursements and Remittance clients (transfer(), get_transaction_status()),
   reusing the shared product core and exec mixins built for Collections.
 - Added polling helpers to polling clients
+- MomoClient/AsyncMomoClient composing Collections, Disbursements, and Remittance under
+  one entry point, each product optional.
+- Curated top-level `mtn_momo` package re-exports (client, config, models, exceptions,
+  polling), so `import mtn_momo as momo` gives a full public surface.
+- SandboxProvisioner/AsyncSandboxProvisioner for creating sandbox API users/keys
+  (subscription-key-only auth, no bearer token required).
+- mtn-momo-provision CLI entry point for provisioning sandbox credentials from the
+  command line.

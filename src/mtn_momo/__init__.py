@@ -30,6 +30,11 @@ from mtn_momo.polling import PollConfig
 from mtn_momo.products.collections import AsyncCollectionsClient, CollectionsClient
 from mtn_momo.products.disbursements import AsyncDisbursementsClient, DisbursementsClient
 from mtn_momo.products.remittance import AsyncRemittanceClient, RemittanceClient
+from mtn_momo.provisioning import (
+    AsyncSandboxProvisioner,
+    ProvisionedCredentials,
+    SandboxProvisioner,
+)
 
 __all__ = [
     "ApprovalRejectedError",
@@ -37,6 +42,7 @@ __all__ = [
     "AsyncDisbursementsClient",
     "AsyncMomoClient",
     "AsyncRemittanceClient",
+    "AsyncSandboxProvisioner",
     "AuthenticationError",
     "BalanceInfo",
     "CollectionsClient",
@@ -59,8 +65,10 @@ __all__ = [
     "PollConfig",
     "PollTimeoutError",
     "ProductConfig",
+    "ProvisionedCredentials",
     "RemittanceClient",
     "ResourceNotFoundError",
+    "SandboxProvisioner",
     "ServerError",
     "TokenResponse",
     "TransactionStatus",

@@ -15,3 +15,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 - Pure token cache (TokenCache/CachedToken) with expiry leeway and injectable clock.
 - PreparedRequest and raise_for_response() for shared, transport-agnostic request/error
   handling used by both the sync and async clients.
+- CollectionsClient/AsyncCollectionsClient: request_to_pay, get_transaction_status
+- _BaseProductCore + _SyncExecMixin/_AsyncExecMixin sharing all request/response
+  logic between sync and async, differing only in I/O execution
+- SyncHttpTransport/AsyncHttpTransport wrapping httpx, with network errors
+  mapped to MomoConnectionError/MomoTimeoutError

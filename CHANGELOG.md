@@ -20,3 +20,5 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
   logic between sync and async, differing only in I/O execution
 - SyncHttpTransport/AsyncHttpTransport wrapping httpx, with network errors
   mapped to MomoConnectionError/MomoTimeoutError
+- Sync/async Disbursements and Remittance clients (transfer(), get_transaction_status()),
+  reusing the shared product core and exec mixins built for Collections.

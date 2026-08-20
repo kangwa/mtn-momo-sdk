@@ -4,6 +4,7 @@
 
 ```bash
 uv sync --dev
+uv run pre-commit install
 ```
 
 ## Before submitting a change
@@ -19,7 +20,6 @@ All four must pass.
 
 ## Guidelines
 
-- Keep sync and async code paths sharing logic — new endpoint behavior belongs in the pure `_BaseProductCore` builders, not duplicated across sync/async client methods.
 - Add tests alongside any new code (respx-mocked, no real network calls in the default test suite).
 - Keep commits scoped to one logical change.
 

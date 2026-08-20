@@ -15,4 +15,4 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check
       - run: uv run mypy src
-      - run: uv run pytest -m "not sandbox" --cov=momo_sdk --cov-report=term-missing
+      - run: uv run pytest -m "not sandbox" --cov=mtn_momo --cov-report=term-missing

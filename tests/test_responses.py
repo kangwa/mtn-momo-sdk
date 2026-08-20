@@ -1,5 +1,5 @@
-from momo_sdk.constants import TransactionStatusValue
-from momo_sdk.models.responses import TransactionStatus
+from mtn_momo.constants import TransactionStatusValue
+from mtn_momo.models.responses import TransactionStatus
 
 
 class TestTransactionStatus:

@@ -1,3 +1,3 @@
 # API Reference
 
-::: momo_sdk
+::: mtn_momo

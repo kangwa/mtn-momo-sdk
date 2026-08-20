@@ -1,6 +1,6 @@
 """Models for error bodies returned by the MoMo API."""
 
-from momo_sdk.models.common import MomoModel
+from mtn_momo.models.common import MomoModel
 
 
 class MomoErrorBody(MomoModel):

@@ -3,7 +3,7 @@
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
-from momo_sdk.constants import PartyIdType
+from mtn_momo.constants import PartyIdType
 
 
 class MomoModel(BaseModel):

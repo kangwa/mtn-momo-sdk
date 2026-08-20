@@ -1,9 +1,9 @@
 """Flat re-export of MoMo request, response, and shared models."""
 
-from momo_sdk.models.common import MomoModel, Party
-from momo_sdk.models.errors import MomoErrorBody
-from momo_sdk.models.requests import RequestToPayRequest, TransferRequest
-from momo_sdk.models.responses import (
+from mtn_momo.models.common import MomoModel, Party
+from mtn_momo.models.errors import MomoErrorBody
+from mtn_momo.models.requests import RequestToPayRequest, TransferRequest
+from mtn_momo.models.responses import (
     ApiUserInfo,
     BalanceInfo,
     BasicUserInfo,

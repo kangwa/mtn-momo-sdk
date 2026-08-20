@@ -1,6 +1,6 @@
-from momo_sdk.constants import PartyIdType
-from momo_sdk.models.common import Party
-from momo_sdk.models.requests import RequestToPayRequest
+from mtn_momo.constants import PartyIdType
+from mtn_momo.models.common import Party
+from mtn_momo.models.requests import RequestToPayRequest
 
 
 class TestRequestToPayRequest:

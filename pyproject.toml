@@ -1,5 +1,5 @@
 [project]
-name = "momo-sdk"
+name = "mtn-momo"
 version = "0.1.0"
 description = "Unofficial Python SDK for the MTN Mobile Money (MoMo) Open API"
 readme = "README.md"
@@ -17,7 +17,7 @@ build-backend = "uv_build"
 dotenv = ["python-dotenv>=1.0"]
 
 [project.scripts]
-momo-sdk-provision = "momo_sdk.provisioning:main"
+mtn-momo-provision = "mtn_momo.provisioning:main"
 
 [dependency-groups]
 dev = [

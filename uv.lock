@@ -904,7 +904,7 @@ wheels = [
 ]
 
 [[package]]
-name = "momo-sdk"
+name = "mtn-momo"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

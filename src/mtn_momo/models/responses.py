@@ -1,8 +1,8 @@
 """Models for responses returned by the MoMo API."""
 
-from momo_sdk.constants import TransactionStatusValue
-from momo_sdk.models.common import MomoModel
-from momo_sdk.models.errors import MomoErrorBody
+from mtn_momo.constants import TransactionStatusValue
+from mtn_momo.models.common import MomoModel
+from mtn_momo.models.errors import MomoErrorBody
 
 
 class TransactionStatus(MomoModel):

@@ -1,5 +1,5 @@
-from momo_sdk.constants import PartyIdType
-from momo_sdk.models.common import Party
+from mtn_momo.constants import PartyIdType
+from mtn_momo.models.common import Party
 
 
 class TestParty:

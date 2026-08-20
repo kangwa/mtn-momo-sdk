@@ -1,6 +1,6 @@
 """Models for requests sent to the MoMo API."""
 
-from momo_sdk.models.common import MomoModel, Party
+from mtn_momo.models.common import MomoModel, Party
 
 
 class RequestToPayRequest(MomoModel):

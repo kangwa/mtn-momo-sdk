@@ -1,6 +1,6 @@
 import pytest
 
-from momo_sdk.exceptions import (
+from mtn_momo.exceptions import (
     ERROR_CODE_MAP,
     ApprovalRejectedError,
     AuthenticationError,

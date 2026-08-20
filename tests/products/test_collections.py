@@ -8,8 +8,9 @@ import respx
 
 from mtn_momo.config import ProductConfig
 from mtn_momo.constants import PartyIdType, TransactionStatusValue
-from mtn_momo.exceptions import PayerNotFoundError
+from mtn_momo.exceptions import PayerNotFoundError, PollTimeoutError
 from mtn_momo.models.common import Party
+from mtn_momo.polling import PollConfig
 from mtn_momo.products.collections import CollectionsClient
 
 BASE_URL = "https://sandbox.momodeveloper.mtn.com"
@@ -173,3 +174,53 @@ class TestCollectionsClient:
             thread.join()
 
         assert call_count == 1
+
+    @respx.mock
+    def test_wait_for_transaction_polls_until_successful(self, config: ProductConfig) -> None:
+        _mock_token()
+        respx.post(f"{BASE_URL}/collection/v1_0/requesttopay").mock(
+            return_value=httpx.Response(202)
+        )
+
+        client = CollectionsClient(config)
+        reference_id = client.request_to_pay(
+            amount="500",
+            currency="EUR",
+            payer=Party(party_id_type=PartyIdType.MSISDN, party_id="260960000000"),
+        )
+
+        status_route = respx.get(f"{BASE_URL}/collection/v1_0/requesttopay/{reference_id}")
+        status_route.side_effect = [
+            httpx.Response(200, json={"status": "PENDING"}),
+            httpx.Response(200, json={"status": "SUCCESSFUL"}),
+        ]
+
+        status = client.wait_for_transaction(
+            reference_id, poll_config=PollConfig(interval=0.01, timeout=5.0)
+        )
+
+        assert status.status == TransactionStatusValue.SUCCESSFUL
+        assert status_route.call_count == 2
+
+    @respx.mock
+    def test_wait_for_transaction_raises_on_timeout(self, config: ProductConfig) -> None:
+        _mock_token()
+        respx.post(f"{BASE_URL}/collection/v1_0/requesttopay").mock(
+            return_value=httpx.Response(202)
+        )
+
+        client = CollectionsClient(config)
+        reference_id = client.request_to_pay(
+            amount="500",
+            currency="EUR",
+            payer=Party(party_id_type=PartyIdType.MSISDN, party_id="260960000000"),
+        )
+
+        respx.get(f"{BASE_URL}/collection/v1_0/requesttopay/{reference_id}").mock(
+            return_value=httpx.Response(200, json={"status": "PENDING"})
+        )
+
+        with pytest.raises(PollTimeoutError):
+            client.wait_for_transaction(
+                reference_id, poll_config=PollConfig(interval=0.01, timeout=0.02)
+            )

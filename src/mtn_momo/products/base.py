@@ -17,6 +17,12 @@ from mtn_momo.http.sync_transport import SyncHttpTransport
 from mtn_momo.models.common import Party
 from mtn_momo.models.requests import RequestToPayRequest, TransferRequest
 from mtn_momo.models.responses import TokenResponse, TransactionStatus
+from mtn_momo.polling import (
+    DEFAULT_POLL_CONFIG,
+    PollConfig,
+    poll_until_complete_async,
+    poll_until_complete_sync,
+)
 
 
 class _BaseProductCore:
@@ -128,6 +134,32 @@ class _SyncExecMixin(_BaseProductCore):
         raise_for_response(response)
         return response
 
+    def get_transaction_status(self, reference_id: str) -> TransactionStatus:
+        """Check the status of a previously submitted payment or transfer."""
+        access_token = self._ensure_token()
+        request = self._build_status_request(reference_id, access_token)
+        response = self._execute(request)
+        return self._parse_status_response(response)
+
+    def wait_for_transaction(
+        self, reference_id: str, *, poll_config: PollConfig = DEFAULT_POLL_CONFIG
+    ) -> TransactionStatus:
+        """Poll get_transaction_status() until the transaction reaches a terminal status.
+
+        Args:
+            reference_id: The reference ID returned by request_to_pay() or transfer().
+            poll_config: Poll timing configuration.
+
+        Returns:
+            The terminal TransactionStatus (SUCCESSFUL or FAILED).
+
+        Raises:
+            PollTimeoutError: If poll_config.timeout elapses first.
+        """
+        return poll_until_complete_sync(
+            lambda: self.get_transaction_status(reference_id), poll_config
+        )
+
     def close(self) -> None:
         """Close the underlying HTTP transport."""
         self._transport.close()
@@ -165,6 +197,32 @@ class _AsyncExecMixin(_BaseProductCore):
         response = await self._transport.send(request)
         raise_for_response(response)
         return response
+
+    async def get_transaction_status(self, reference_id: str) -> TransactionStatus:
+        """Check the status of a previously submitted payment or transfer."""
+        access_token = await self._ensure_token()
+        request = self._build_status_request(reference_id, access_token)
+        response = await self._execute(request)
+        return self._parse_status_response(response)
+
+    async def wait_for_transaction(
+        self, reference_id: str, *, poll_config: PollConfig = DEFAULT_POLL_CONFIG
+    ) -> TransactionStatus:
+        """Poll get_transaction_status() until the transaction reaches a terminal status.
+
+        Args:
+            reference_id: The reference ID returned by request_to_pay() or transfer().
+            poll_config: Poll timing configuration.
+
+        Returns:
+            The terminal TransactionStatus (SUCCESSFUL or FAILED).
+
+        Raises:
+            PollTimeoutError: If poll_config.timeout elapses first.
+        """
+        return await poll_until_complete_async(
+            lambda: self.get_transaction_status(reference_id), poll_config
+        )
 
     async def aclose(self) -> None:
         """Close the underlying HTTP transport."""

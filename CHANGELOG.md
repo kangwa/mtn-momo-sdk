@@ -22,3 +22,4 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
   mapped to MomoConnectionError/MomoTimeoutError
 - Sync/async Disbursements and Remittance clients (transfer(), get_transaction_status()),
   reusing the shared product core and exec mixins built for Collections.
+- Added polling helpers to polling clients

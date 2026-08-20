@@ -7,7 +7,6 @@ from typing import ClassVar
 from mtn_momo._internal.utils import new_reference_id
 from mtn_momo.models.common import Party
 from mtn_momo.models.requests import TransferRequest
-from mtn_momo.models.responses import TransactionStatus
 from mtn_momo.products.base import _AsyncExecMixin, _SyncExecMixin
 
 
@@ -57,13 +56,6 @@ class RemittanceClient(_SyncExecMixin):
         self._execute(request)
         return external_id
 
-    def get_transaction_status(self, reference_id: str) -> TransactionStatus:
-        """Check the status of a previously submitted transfer()."""
-        access_token = self._ensure_token()
-        request = self._build_status_request(reference_id, access_token)
-        response = self._execute(request)
-        return self._parse_status_response(response)
-
 
 class AsyncRemittanceClient(_AsyncExecMixin):
     """Asynchronous client for cross-border transfers to a payee."""
@@ -110,10 +102,3 @@ class AsyncRemittanceClient(_AsyncExecMixin):
         )
         await self._execute(request)
         return external_id
-
-    async def get_transaction_status(self, reference_id: str) -> TransactionStatus:
-        """Check the status of a previously submitted transfer()."""
-        access_token = await self._ensure_token()
-        request = self._build_status_request(reference_id, access_token)
-        response = await self._execute(request)
-        return self._parse_status_response(response)

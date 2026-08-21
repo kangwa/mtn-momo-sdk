@@ -5,12 +5,18 @@ repo_url: https://github.com/kangwa/mtn-momo-sdk
 theme:
   name: material
 
+markdown_extensions:
+  - md_in_html
+  - admonition
+  - pymdownx.superfences
+
 nav:
   - Home: index.md
   - API Reference: reference.md
 
 plugins:
   - search
+  - callouts
   - mkdocstrings:
       handlers:
         python:

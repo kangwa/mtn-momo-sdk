@@ -52,6 +52,7 @@ dev = [
 
 docs = [
   "mkdocs>=1.6,<2.0",
+  "mkdocs-callouts>=1.13",
   "mkdocs-material>=9.5",
   "mkdocstrings[python]>=0.25",
 ]

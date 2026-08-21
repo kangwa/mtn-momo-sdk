@@ -35,12 +35,10 @@ def _has_product_env(prefix: str) -> bool:
     )
 
 
-@pytest.mark.skipif(
-    not _has_product_env("MOMO_COLLECTIONS_"), reason="missing MOMO_COLLECTIONS_* env vars"
-)
+@pytest.mark.skipif(not _has_product_env("MOMO_COL_"), reason="missing MOMO_COL_* env vars")
 class TestCollectionsSandboxSmoke:
     def test_request_to_pay_and_check_status(self) -> None:
-        config = ProductConfig.from_env("MOMO_COLLECTIONS_")
+        config = ProductConfig.from_env("MOMO_COL_")
         with CollectionsClient(config) as client:
             reference_id = client.request_to_pay(
                 amount="500",
@@ -52,25 +50,23 @@ class TestCollectionsSandboxSmoke:
             assert status.status is not None
 
     def test_get_balance(self) -> None:
-        config = ProductConfig.from_env("MOMO_COLLECTIONS_")
+        config = ProductConfig.from_env("MOMO_COL_")
         with CollectionsClient(config) as client:
             balance = client.get_balance()
             assert balance.currency
 
     def test_is_account_holder_active(self) -> None:
-        config = ProductConfig.from_env("MOMO_COLLECTIONS_")
+        config = ProductConfig.from_env("MOMO_COL_")
         with CollectionsClient(config) as client:
             # Just confirming the call succeeds and parses — sandbox test
             # accounts aren't guaranteed to report active either way.
             client.is_account_holder_active(PartyIdType.MSISDN, _TEST_MSISDN)
 
 
-@pytest.mark.skipif(
-    not _has_product_env("MOMO_DISBURSEMENTS_"), reason="missing MOMO_DISBURSEMENTS_* env vars"
-)
+@pytest.mark.skipif(not _has_product_env("MOMO_DIS_"), reason="missing MOMO_DIS_* env vars")
 class TestDisbursementsSandboxSmoke:
     def test_transfer_and_check_status(self) -> None:
-        config = ProductConfig.from_env("MOMO_DISBURSEMENTS_")
+        config = ProductConfig.from_env("MOMO_DIS_")
         with DisbursementsClient(config) as client:
             reference_id = client.transfer(
                 amount="500",
@@ -81,12 +77,10 @@ class TestDisbursementsSandboxSmoke:
             assert status.status is not None
 
 
-@pytest.mark.skipif(
-    not _has_product_env("MOMO_REMITTANCE_"), reason="missing MOMO_REMITTANCE_* env vars"
-)
+@pytest.mark.skipif(not _has_product_env("MOMO_REM_"), reason="missing MOMO_REM_* env vars")
 class TestRemittanceSandboxSmoke:
     def test_transfer_and_check_status(self) -> None:
-        config = ProductConfig.from_env("MOMO_REMITTANCE_")
+        config = ProductConfig.from_env("MOMO_REM_")
         with RemittanceClient(config) as client:
             reference_id = client.transfer(
                 amount="500",

@@ -26,7 +26,7 @@ from mtn_momo.exceptions import (
 )
 from mtn_momo.models.common import Party
 from mtn_momo.models.responses import BalanceInfo, TokenResponse, TransactionStatus
-from mtn_momo.polling import PollConfig
+from mtn_momo.polling import PollConfig, poll_until_complete_async, poll_until_complete_sync
 from mtn_momo.products.collections import AsyncCollectionsClient, CollectionsClient
 from mtn_momo.products.disbursements import AsyncDisbursementsClient, DisbursementsClient
 from mtn_momo.products.remittance import AsyncRemittanceClient, RemittanceClient
@@ -75,4 +75,6 @@ __all__ = [
     "TransactionStatusValue",
     "UnknownMomoAPIError",
     "ValidationError",
+    "poll_until_complete_async",
+    "poll_until_complete_sync",
 ]

@@ -1,0 +1,24 @@
+name: Sandbox Smoke Test
+on:
+  workflow_dispatch: {}
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.10"
+      - run: uv sync --dev
+      - run: uv run pytest -m sandbox -v
+        env:
+          MOMO_COLLECTIONS_SUBSCRIPTION_KEY: ${{ secrets.MOMO_COLLECTIONS_SUBSCRIPTION_KEY }}
+          MOMO_COLLECTIONS_API_USER: ${{ secrets.MOMO_COLLECTIONS_API_USER }}
+          MOMO_COLLECTIONS_API_KEY: ${{ secrets.MOMO_COLLECTIONS_API_KEY }}
+          MOMO_DISBURSEMENTS_SUBSCRIPTION_KEY: ${{ secrets.MOMO_DISBURSEMENTS_SUBSCRIPTION_KEY }}
+          MOMO_DISBURSEMENTS_API_USER: ${{ secrets.MOMO_DISBURSEMENTS_API_USER }}
+          MOMO_DISBURSEMENTS_API_KEY: ${{ secrets.MOMO_DISBURSEMENTS_API_KEY }}
+          MOMO_REMITTANCE_SUBSCRIPTION_KEY: ${{ secrets.MOMO_REMITTANCE_SUBSCRIPTION_KEY }}
+          MOMO_REMITTANCE_API_USER: ${{ secrets.MOMO_REMITTANCE_API_USER }}
+          MOMO_REMITTANCE_API_KEY: ${{ secrets.MOMO_REMITTANCE_API_KEY }}
+          MOMO_SANDBOX_SUBSCRIPTION_KEY: ${{ secrets.MOMO_SANDBOX_SUBSCRIPTION_KEY }}

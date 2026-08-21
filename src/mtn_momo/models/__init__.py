@@ -1,7 +1,6 @@
 """Flat re-export of MoMo request, response, and shared models."""
 
 from mtn_momo.models.common import MomoModel, Party
-from mtn_momo.models.errors import MomoErrorBody
 from mtn_momo.models.requests import RequestToPayRequest, TransferRequest
 from mtn_momo.models.responses import (
     ApiUserInfo,
@@ -15,7 +14,6 @@ __all__ = [
     "ApiUserInfo",
     "BalanceInfo",
     "BasicUserInfo",
-    "MomoErrorBody",
     "MomoModel",
     "Party",
     "RequestToPayRequest",

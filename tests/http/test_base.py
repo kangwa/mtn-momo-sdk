@@ -4,6 +4,7 @@ import pytest
 from mtn_momo.exceptions import (
     AuthenticationError,
     DuplicateReferenceError,
+    MomoAPIError,
     NotEnoughFundsError,
     PayerNotFoundError,
     ResourceNotFoundError,
@@ -11,7 +12,7 @@ from mtn_momo.exceptions import (
     UnknownMomoAPIError,
     ValidationError,
 )
-from mtn_momo.http.base import PreparedRequest, raise_for_response
+from mtn_momo.http.base import PreparedRequest, parse_json_response, raise_for_response
 
 
 class TestRaiseForResponse:
@@ -57,6 +58,20 @@ class TestRaiseForResponse:
     def test_no_body_and_4xx_raises_validation_error(self) -> None:
         with pytest.raises(ValidationError):
             raise_for_response(httpx.Response(400))
+
+
+class TestParseJsonResponse:
+    def test_returns_parsed_json(self) -> None:
+        response = httpx.Response(200, json={"status": "PENDING"})
+        assert parse_json_response(response) == {"status": "PENDING"}
+
+    def test_non_json_body_raises_momo_api_error(self) -> None:
+        # e.g. a WAF/edge proxy returning an HTML block page with a 2xx status.
+        response = httpx.Response(200, text="<html>Request Rejected</html>")
+        with pytest.raises(MomoAPIError) as exc_info:
+            parse_json_response(response)
+        assert exc_info.value.status_code == 200
+        assert "Request Rejected" in exc_info.value.raw_body
 
 
 class TestPreparedRequest:

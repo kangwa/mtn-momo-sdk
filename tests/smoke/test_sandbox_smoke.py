@@ -24,7 +24,9 @@ from mtn_momo.provisioning import SandboxProvisioner
 pytestmark = pytest.mark.sandbox
 
 # Adjust via env var if your sandbox account uses a different test MSISDN.
-_TEST_MSISDN = os.environ.get("MOMO_SANDBOX_TEST_MSISDN", "46733123450")
+# `or` (not a plain .get default) so an empty-but-set var, e.g. from a .env
+# template, still falls back instead of silently sending an empty party_id.
+_TEST_MSISDN = os.environ.get("MOMO_SANDBOX_TEST_MSISDN") or "46733123450"
 
 
 def _has_product_env(prefix: str) -> bool:

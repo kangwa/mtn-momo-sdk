@@ -9,12 +9,8 @@ class TestTransactionStatus:
         assert status.financial_transaction_id is None
 
     def test_parses_failed_with_reason(self) -> None:
-        status = TransactionStatus.model_validate(
-            {
-                "status": "FAILED",
-                "reason": {"code": "PAYER_NOT_FOUND", "message": "Payer not found"},
-            }
-        )
+        # Verified against a real sandbox response: `reason` is a bare error
+        # code string (e.g. "INTERNAL_PROCESSING_ERROR"), not a nested object.
+        status = TransactionStatus.model_validate({"status": "FAILED", "reason": "PAYER_NOT_FOUND"})
 
-        assert status.reason is not None
-        assert status.reason.code == "PAYER_NOT_FOUND"
+        assert status.reason == "PAYER_NOT_FOUND"

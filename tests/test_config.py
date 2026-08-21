@@ -30,11 +30,11 @@ class TestProductConfig:
 
 class TestProductConfigFromEnv:
     def test_reads_prefixed_env_vars(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("MOMO_COLLECTIONS_SUBSCRIPTION_KEY", "key")
-        monkeypatch.setenv("MOMO_COLLECTIONS_API_USER", "user")
-        monkeypatch.setenv("MOMO_COLLECTIONS_API_KEY", "secret")
+        monkeypatch.setenv("MOMO_COL_SUBSCRIPTION_KEY", "key")
+        monkeypatch.setenv("MOMO_COL_API_USER", "user")
+        monkeypatch.setenv("MOMO_COL_API_KEY", "secret")
 
-        config = ProductConfig.from_env("MOMO_COLLECTIONS_")
+        config = ProductConfig.from_env("MOMO_COL_")
 
         assert config.subscription_key == "key"
         assert config.api_user == "user"
@@ -42,6 +42,23 @@ class TestProductConfigFromEnv:
         assert config.target_environment == "sandbox"
 
     def test_missing_env_var_raises(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.delenv("MOMO_COLLECTIONS_SUBSCRIPTION_KEY", raising=False)
+        monkeypatch.delenv("MOMO_COL_SUBSCRIPTION_KEY", raising=False)
         with pytest.raises(MomoConfigError):
-            ProductConfig.from_env("MOMO_COLLECTIONS_")
+            ProductConfig.from_env("MOMO_COL_")
+
+    def test_empty_but_set_optional_vars_fall_back_to_defaults(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        # A .env template can set a var to an empty string rather than leaving
+        # it absent (e.g. `MOMO_COL_TARGET_ENVIRONMENT=`). That must still
+        # fall back to the default, not silently produce an empty value.
+        monkeypatch.setenv("MOMO_COL_SUBSCRIPTION_KEY", "key")
+        monkeypatch.setenv("MOMO_COL_API_USER", "user")
+        monkeypatch.setenv("MOMO_COL_API_KEY", "secret")
+        monkeypatch.setenv("MOMO_COL_BASE_URL", "")
+        monkeypatch.setenv("MOMO_COL_TARGET_ENVIRONMENT", "")
+
+        config = ProductConfig.from_env("MOMO_COL_", base_url="https://fallback.example")
+
+        assert config.base_url == "https://fallback.example"
+        assert config.target_environment == "sandbox"

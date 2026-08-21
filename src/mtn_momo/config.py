@@ -43,7 +43,7 @@ class ProductConfig:
         (all required), plus optional `{prefix}BASE_URL` and `{prefix}TARGET_ENVIRONMENT`.
 
         Args:
-            prefix: Env var prefix, e.g. "MOMO_COLLECTIONS_".
+            prefix: Env var prefix, e.g. "MOMO_COL_".
             base_url: The API base URL to use if `{prefix}BASE_URL` isn't set.
 
         Raises:
@@ -57,9 +57,9 @@ class ProductConfig:
             return value
 
         return cls(
-            base_url=os.environ.get(f"{prefix}BASE_URL", base_url),
+            base_url=os.environ.get(f"{prefix}BASE_URL") or base_url,
             subscription_key=_require("SUBSCRIPTION_KEY"),
             api_user=_require("API_USER"),
             api_key=_require("API_KEY"),
-            target_environment=os.environ.get(f"{prefix}TARGET_ENVIRONMENT", "sandbox"),
+            target_environment=os.environ.get(f"{prefix}TARGET_ENVIRONMENT") or "sandbox",
         )

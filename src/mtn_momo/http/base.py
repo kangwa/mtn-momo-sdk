@@ -9,6 +9,7 @@ from mtn_momo.exceptions import (
     ERROR_CODE_MAP,
     AuthenticationError,
     DuplicateReferenceError,
+    MomoAPIError,
     ResourceNotFoundError,
     ServerError,
     UnknownMomoAPIError,
@@ -85,3 +86,24 @@ def raise_for_response(response: httpx.Response) -> None:
         raise ServerError(message, status_code=status_code, raw_body=body)
 
     raise ValidationError(message, status_code=status_code, raw_body=body)
+
+
+def parse_json_response(response: httpx.Response) -> Any:
+    """Parse a response body as JSON, raising a typed error if it isn't valid JSON.
+
+    A successful HTTP status doesn't guarantee a JSON body — an edge proxy or
+    WAF in front of the real API can return an HTML error page with a 2xx
+    status. Use this instead of calling response.json() directly when parsing
+    a response already confirmed successful by raise_for_response().
+
+    Raises:
+        MomoAPIError: If the body can't be parsed as JSON.
+    """
+    try:
+        return response.json()
+    except ValueError as exc:
+        raise MomoAPIError(
+            "MoMo API returned a non-JSON response body",
+            status_code=response.status_code,
+            raw_body=response.text,
+        ) from exc

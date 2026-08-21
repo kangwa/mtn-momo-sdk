@@ -15,6 +15,19 @@ from mtn_momo.provisioning import (
 
 class TestSandboxProvisioner:
     @respx.mock
+    def test_default_callback_host_is_not_empty(self) -> None:
+        # MTN's real sandbox rejects an empty providerCallbackHost with a bare
+        # 400, so the default here must never regress to "".
+        route = respx.post(f"{SANDBOX_BASE_URL}/v1_0/apiuser").mock(
+            return_value=httpx.Response(201)
+        )
+
+        SandboxProvisioner("sub-key").create_api_user()
+
+        request = route.calls.last.request
+        assert json.loads(request.content)["providerCallbackHost"] != ""
+
+    @respx.mock
     def test_create_api_user_returns_generated_uuid(self) -> None:
         route = respx.post(f"{SANDBOX_BASE_URL}/v1_0/apiuser").mock(
             return_value=httpx.Response(201)
@@ -173,13 +186,49 @@ class TestMain:
 
         monkeypatch.setattr("mtn_momo.provisioning.SandboxProvisioner", _FakeProvisioner)
 
-        exit_code = main(["--subscription-key", "sub-key"])
+        exit_code = main(["--product", "collections", "--subscription-key", "sub-key"])
 
         assert exit_code == 0
         captured = capsys.readouterr()
-        assert "API_USER=user-1" in captured.out
-        assert "API_KEY=secret-key" in captured.out
+        assert "MOMO_COL_SUBSCRIPTION_KEY=sub-key" in captured.out
+        assert "MOMO_COL_API_USER=user-1" in captured.out
+        assert "MOMO_COL_API_KEY=secret-key" in captured.out
+
+    def test_main_uses_product_specific_prefix(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        class _FakeProvisioner:
+            def __init__(self, subscription_key: str, *, base_url: str) -> None:
+                pass
+
+            def provision(self, callback_host: str = "") -> ProvisionedCredentials:
+                return ProvisionedCredentials(api_user="user-1", api_key="secret-key")
+
+            def close(self) -> None:
+                pass
+
+            def __enter__(self) -> "_FakeProvisioner":
+                return self
+
+            def __exit__(self, *exc: object) -> None:
+                self.close()
+
+        monkeypatch.setattr("mtn_momo.provisioning.SandboxProvisioner", _FakeProvisioner)
+
+        exit_code = main(["--product", "disbursements", "--subscription-key", "sub-key"])
+
+        assert exit_code == 0
+        captured = capsys.readouterr()
+        assert "MOMO_DIS_API_USER=user-1" in captured.out
 
     def test_main_requires_subscription_key(self) -> None:
         with pytest.raises(SystemExit):
-            main([])
+            main(["--product", "collections"])
+
+    def test_main_requires_product(self) -> None:
+        with pytest.raises(SystemExit):
+            main(["--subscription-key", "sub-key"])
+
+    def test_main_rejects_unknown_product(self) -> None:
+        with pytest.raises(SystemExit):
+            main(["--product", "loans", "--subscription-key", "sub-key"])

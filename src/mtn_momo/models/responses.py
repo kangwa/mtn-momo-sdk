@@ -2,7 +2,6 @@
 
 from mtn_momo.constants import TransactionStatusValue
 from mtn_momo.models.common import MomoModel
-from mtn_momo.models.errors import MomoErrorBody
 
 
 class TransactionStatus(MomoModel):
@@ -16,7 +15,7 @@ class TransactionStatus(MomoModel):
         currency: The ISO 4217 currency code, when available.
         financial_transaction_id: MoMo's ID for the underlying financial transaction.
         external_id: The caller-generated ID the transaction was created with.
-        reason: The error that caused a FAILED status, if applicable.
+        reason: MoMo's error code explaining a FAILED status, e.g. "INTERNAL_PROCESSING_ERROR".
     """
 
     status: TransactionStatusValue
@@ -24,7 +23,7 @@ class TransactionStatus(MomoModel):
     currency: str | None = None
     financial_transaction_id: str | None = None
     external_id: str | None = None
-    reason: MomoErrorBody | None = None
+    reason: str | None = None
 
 
 class BalanceInfo(MomoModel):

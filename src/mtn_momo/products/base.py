@@ -14,7 +14,7 @@ from mtn_momo.auth.token_cache import TokenCache
 from mtn_momo.config import ProductConfig
 from mtn_momo.constants import PartyIdType
 from mtn_momo.http.async_transport import AsyncHttpTransport
-from mtn_momo.http.base import PreparedRequest, raise_for_response
+from mtn_momo.http.base import PreparedRequest, parse_json_response, raise_for_response
 from mtn_momo.http.sync_transport import SyncHttpTransport
 from mtn_momo.models.common import Party
 from mtn_momo.models.requests import RequestToPayRequest, TransferRequest
@@ -125,19 +125,19 @@ class _BaseProductCore:
 
     @staticmethod
     def _parse_token_response(response: httpx.Response) -> TokenResponse:
-        return TokenResponse.model_validate(response.json())
+        return TokenResponse.model_validate(parse_json_response(response))
 
     @staticmethod
     def _parse_status_response(response: httpx.Response) -> TransactionStatus:
-        return TransactionStatus.model_validate(response.json())
+        return TransactionStatus.model_validate(parse_json_response(response))
 
     @staticmethod
     def _parse_balance_response(response: httpx.Response) -> BalanceInfo:
-        return BalanceInfo.model_validate(response.json())
+        return BalanceInfo.model_validate(parse_json_response(response))
 
     @staticmethod
     def _parse_account_holder_active_response(response: httpx.Response) -> bool:
-        return bool(response.json().get("result", False))
+        return bool(parse_json_response(response).get("result", False))
 
 
 class _SyncExecMixin(_BaseProductCore):

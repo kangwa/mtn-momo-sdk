@@ -120,9 +120,7 @@ Balance and account-holder checks:
 balance = client.collections.get_balance()  # or get_balance("ZMW")
 print(balance.available_balance, balance.currency)
 
-is_active = client.collections.is_account_holder_active(
-    momo.PartyIdType.MSISDN, "256770000000"
-)
+is_active = client.collections.is_account_holder_active(momo.PartyIdType.MSISDN, "256770000000")
 ```
 
 ## Handling errors
@@ -154,7 +152,9 @@ Pass a `ProductConfig` directly for secrets from a vault, or to run multiple acc
 ```python
 config = momo.ProductConfig(
     base_url="https://sandbox.momodeveloper.mtn.com",
-    subscription_key="...", api_user="...", api_key="...",
+    subscription_key="...",
+    api_user="...",
+    api_key="...",
 )
 client = momo.MomoClient(collections=config)
 ```

@@ -3,6 +3,15 @@
 All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.1.1] - 2026-11-09
+
+### Fixed
+
+- The PyPI project description now shows `pip install mtn-momo-python` instead of the
+  pre-publication source-only instructions.
+- CI selects each Python version in the test matrix explicitly; the previous
+  `setup-uv` input was ignored, so every job ran on the runner's default interpreter.
+
 ## [0.1.0] - 2026-11-09
 
 ### Added

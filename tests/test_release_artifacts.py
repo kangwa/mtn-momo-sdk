@@ -12,9 +12,9 @@ from scripts.check_dist import check_dist
 
 def distributions(directory: Path, *, wheel_extra=None, source_extra=None, missing=None):
     """Create the minimum release pair expected by the checker."""
-    stem = "mtn_momo-0.1.0"
+    stem = "mtn_momo_python-0.1.0"
     info = f"{stem}.dist-info"
-    metadata = b"Name: mtn-momo\nVersion: 0.1.0\nRequires-Python: >=3.10\n\nSynthetic description\n"
+    metadata = b"Name: mtn-momo-python\nVersion: 0.1.0\nRequires-Python: >=3.10\n\n"
     package = {"mtn_momo/__init__.py": b"", "mtn_momo/py.typed": b""}
     wheel = {
         **package,
@@ -33,7 +33,7 @@ def distributions(directory: Path, *, wheel_extra=None, source_extra=None, missi
             archive.writestr(name, content)
     source = {
         f"{stem}/PKG-INFO": metadata,
-        f"{stem}/pyproject.toml": b"[project]\nname = 'mtn-momo'\n",
+        f"{stem}/pyproject.toml": b"[project]\nname = 'mtn-momo-python'\n",
         f"{stem}/README.md": b"Synthetic README\n",
         f"{stem}/LICENSE.md": b"Synthetic license\n",
         **{f"{stem}/src/{name}": content for name, content in package.items()},
@@ -71,13 +71,15 @@ def test_private_or_unsafe_wheel_paths_are_rejected(tmp_path, entry):
 
 
 def test_source_credentials_are_rejected(tmp_path):
-    distributions(tmp_path, source_extra={"mtn_momo-0.1.0/.env.production": b"Synthetic secret"})
+    distributions(
+        tmp_path, source_extra={"mtn_momo_python-0.1.0/.env.production": b"Synthetic secret"}
+    )
     with pytest.raises(ValueError, match="private/local"):
         check_dist(tmp_path, "0.1.0")
 
 
 @pytest.mark.parametrize(
-    "missing", ["mtn_momo/py.typed", "mtn_momo-0.1.0.dist-info/licenses/LICENSE.md"]
+    "missing", ["mtn_momo/py.typed", "mtn_momo_python-0.1.0.dist-info/licenses/LICENSE.md"]
 )
 def test_required_wheel_files_are_present(tmp_path, missing):
     distributions(tmp_path, missing=missing)
@@ -96,8 +98,8 @@ def test_metadata_version_must_match(tmp_path):
     distributions(
         tmp_path,
         wheel_extra={
-            "mtn_momo-0.1.0.dist-info/METADATA": (
-                b"Name: mtn-momo\nVersion: 0.2.0\nRequires-Python: >=3.10\n"
+            "mtn_momo_python-0.1.0.dist-info/METADATA": (
+                b"Name: mtn-momo-python\nVersion: 0.2.0\nRequires-Python: >=3.10\n"
             ),
         },
     )
@@ -107,7 +109,8 @@ def test_metadata_version_must_match(tmp_path):
 
 def test_console_entry_point_is_checked(tmp_path):
     distributions(
-        tmp_path, wheel_extra={"mtn_momo-0.1.0.dist-info/entry_points.txt": b"[console_scripts]\n"}
+        tmp_path,
+        wheel_extra={"mtn_momo_python-0.1.0.dist-info/entry_points.txt": b"[console_scripts]\n"},
     )
     with pytest.raises(ValueError, match="entry point"):
         check_dist(tmp_path, "0.1.0")

@@ -1,5 +1,5 @@
 [project]
-name = "mtn-momo"
+name = "mtn-momo-python"
 version = "0.1.0"
 description = "Unofficial Python SDK for the MTN Mobile Money (MoMo) Open API"
 readme = "README.md"
@@ -69,6 +69,10 @@ select = ["E", "F", "I", "UP", "B", "SIM", "C4"]
 python_version = "3.10"
 strict = true
 plugins = ["pydantic.mypy"]
+
+[tool.uv.build-backend]
+# The distribution name (mtn-momo-python) and import name (mtn_momo) differ.
+module-name = "mtn_momo"
 
 [tool.pytest.ini_options]
 addopts = "-ra"

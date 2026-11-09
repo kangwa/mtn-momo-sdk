@@ -28,8 +28,10 @@ def _check_metadata(content: bytes, version: str) -> None:
     """Require consistent package identity, version and declared Python support."""
     metadata = BytesParser().parsebytes(content)
     name = re.sub(r"[-_.]+", "-", metadata.get("Name", "")).lower()
-    if name != "mtn-momo" or metadata.get("Version") != version:
-        raise ValueError("Distribution metadata does not match mtn-momo and the project version.")
+    if name != "mtn-momo-python" or metadata.get("Version") != version:
+        raise ValueError(
+            "Distribution metadata does not match mtn-momo-python and the project version."
+        )
     if metadata.get("Requires-Python") != ">=3.10":
         raise ValueError("Distribution must declare the supported Python minimum (>=3.10).")
 
@@ -49,7 +51,7 @@ def check_dist(directory: Path, version: str, tag: str = "") -> tuple[Path, Path
         path.name != ".gitignore" and path not in (wheel, source) for path in directory.iterdir()
     ):
         raise ValueError("Unexpected extra files in the release output directory.")
-    stem = f"mtn_momo-{version}"
+    stem = f"mtn_momo_python-{version}"
     if wheel.name != f"{stem}-py3-none-any.whl" or source.name != f"{stem}.tar.gz":
         raise ValueError(
             "Artifact filenames do not match the project version and pure-Python wheel."

@@ -1,9 +1,11 @@
-# Publishing `mtn-momo`
+# Publishing `mtn-momo-python`
 
-The distribution name is **`mtn-momo`**; the Python import is `mtn_momo`. The
-repository name is not the package name. `mtn-momo-sdk` on PyPI belongs to another
-project. Confirm `mtn-momo` is available before the first release; a missing
-project page alone does not guarantee a name can be registered.
+The distribution name is **`mtn-momo-python`**; the Python import is `mtn_momo`. The
+repository name is not the package name. `mtn-momo-sdk`, `mtn-momo-client`, and
+`mtnmomo` on PyPI belong to other projects, and `mtn-momo` itself is rejected by
+PyPI's similarity rule because it normalizes to the same value as `mtnmomo`. Confirm
+the name is still available before a release; a missing project page alone does not
+guarantee a name can be registered.
 
 ## One-time account setup
 
@@ -18,7 +20,7 @@ project page alone does not guarantee a name can be registered.
 
    | Field | Value |
    | --- | --- |
-   | Project name | `mtn-momo` |
+   | Project name | `mtn-momo-python` |
    | GitHub owner | `kangwa` |
    | Repository | `mtn-momo-sdk` |
    | Workflow filename | `publish.yml` |
@@ -79,12 +81,12 @@ never enters the publish job. Inspect the `python-distributions` artifact.
 5. Verify the PyPI project and install the pinned release in a fresh environment:
 
    ```bash
-   uv run --no-project --with mtn-momo==0.1.0 python -c "import mtn_momo"
+   uv run --no-project --with mtn-momo-python==0.1.0 python -c "import mtn_momo"
    ```
 
    Run that outside this checkout. Check the console entry point too. Only after
    successful publication, replace the README's source-only installation note
-   with `pip install mtn-momo` (or `uv add mtn-momo`).
+   with `pip install mtn-momo-python` (or `uv add mtn-momo-python`).
 
 Published files cannot be replaced. Fixes need a new version; do not reuse a
 version/tag with different artifacts. If an upload is interrupted, inspect PyPI

@@ -5,6 +5,7 @@
 **Unofficial Python SDK for the [MTN Mobile Money (MoMo) Open API](https://momodeveloper.mtn.com/api-documentation/)**
 
 [![CI](https://github.com/kangwa/mtn-momo-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/kangwa/mtn-momo-sdk/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/mtn-momo-python?style=flat-square)](https://pypi.org/project/mtn-momo-python/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
 [![Typed](https://img.shields.io/badge/typing-typed-4c1?style=flat-square)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow?style=flat-square)](LICENSE.md)
@@ -17,19 +18,21 @@ Not affiliated with, endorsed by, or officially connected to MTN Group.
 
 ## Installation
 
-Not yet on PyPI — install from source:
-
 ```bash
-git clone https://github.com/kangwa/mtn-momo-sdk
-cd mtn-momo-sdk
-uv sync
+pip install mtn-momo-python
 ```
 
-Requires Python 3.10+.
+Or with uv:
 
-The distribution name is `mtn-momo-python` and the import is `mtn_momo`. First-release
-preparation and Trusted Publishing setup are documented in [RELEASE.md](RELEASE.md).
-The source-only instructions above remain intentional until publication succeeds.
+```bash
+uv add mtn-momo-python
+```
+
+Requires Python 3.10+. The distribution name is `mtn-momo-python` and the import is
+`mtn_momo`; the two differ because PyPI's similarity rules reserve the shorter names.
+
+To work on the SDK itself, clone the repository and run `uv sync --dev`. Release and
+publishing steps are documented in [RELEASE.md](RELEASE.md).
 
 ## Usage
 

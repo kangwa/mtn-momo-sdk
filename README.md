@@ -27,6 +27,10 @@ uv sync
 
 Requires Python 3.10+.
 
+The distribution name is `mtn-momo` and the import is `mtn_momo`. First-release
+preparation and Trusted Publishing setup are documented in [RELEASE.md](RELEASE.md).
+The source-only instructions above remain intentional until publication succeeds.
+
 ## Usage
 
 Sign up at the [MoMo Developer Portal](https://momodeveloper.mtn.com/) and subscribe to the products you need — Collections, Disbursements, and Remittance are separate subscriptions, **each with its own subscription key**. Provision a sandbox API user and key once per product, against that product's key:

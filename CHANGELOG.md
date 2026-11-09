@@ -7,6 +7,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- Release artifact validation, clean-wheel CI smoke checks, and a guarded PyPI
+  Trusted Publishing workflow; manual workflow runs validate without publishing.
+
 - Project skeleton: pyproject.toml, tooling (ruff/mypy/pytest), CI, docs scaffold.
 - Request/response models (Party, RequestToPayRequest, TransferRequest, TransactionStatus,
   BalanceInfo, TokenResponse, ApiUserInfo, BasicUserInfo) and exception hierarchy

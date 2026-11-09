@@ -18,6 +18,10 @@ uv run pytest -m "not sandbox"
 
 All four must pass.
 
+Release artifacts are also built and checked in CI, including a clean-wheel
+installation test. See [RELEASE.md](RELEASE.md) for the publishing checklist.
+Live MTN sandbox credentials are not required for these checks.
+
 ## Guidelines
 
 - Add tests alongside any new code (respx-mocked, no real network calls in the default test suite).
